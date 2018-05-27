@@ -1,0 +1,14 @@
+﻿<Window x:Class="WpfApp1.UpdateUI"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfApp1"
+        mc:Ignorable="d"
+        Title="UpdateUI" Height="350" Width="500">
+    <StackPanel x:Name="probar">
+        <TextBlock xml:space="preserve" x:Name="textblock" HorizontalAlignment="Left" Margin="60,20,20,20" TextWrapping="Wrap" 
+               VerticalAlignment="Top"/>
+        <Button x:Name="cancel" Content="取消" HorizontalAlignment="Left" Width="auto" Margin="60,30,0,15" Height="25" Click="Button_Click_cancel" RenderTransformOrigin="0.5,0.513"/>
+    </StackPanel>
+</Window>
