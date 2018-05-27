@@ -166,10 +166,14 @@ namespace WpfApp1
                         //应该放在底部，否则会导致软件直接退出，其它操作没有进行。
                         else if (tem_file_updateMethod == "更新本软件")
                         {
+                            System.IO.File.Copy(downloadPath + "\\" + tem_file_name,
+                                PcPath + "\\" + tem_file_name, true);
                             MessageBox.Show("更新完毕，软件需要重启");
-                            System.Diagnostics.Process.Start(@".\update_its.exe");
+                            string targetSoftwarePath = PcPath + " " + tem_file_name + " " + current;
+                            System.Diagnostics.Process.Start(@".\update_its.exe", targetSoftwarePath);
                             UpdatePCini(PcPath, IniName);
                             Environment.Exit(0);
+
                         }
                     }
                     break;
