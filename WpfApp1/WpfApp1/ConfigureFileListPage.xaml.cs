@@ -13,9 +13,13 @@ namespace WpfApp1
     /// </summary>
     public partial class ConfigureFileListPage : Page
     {
+        private static readonly log4net.ILog log =
+            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public ConfigureFileListPage()
         {
             InitializeComponent();
+            log.Info("加载ConfigureFileListPage");
+
             DispatcherTimer dispatcherTimer = new DispatcherTimer();
             dispatcherTimer.Tick += new EventHandler(dispatcherTimer_Tick);
             dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
@@ -92,6 +96,7 @@ namespace WpfApp1
             SWSetting.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             SWSetting.Title = "修改配置文件";
             SWSetting.ShowDialog();
+            log.Info("点击修改配置文件：" + player.ConfigFileName);
         }
 
         private void BtnCreate_Click(object sender, RoutedEventArgs e)
@@ -142,7 +147,12 @@ namespace WpfApp1
                     System.IO.File.Copy(infos[i].path, subVersionPath + "\\" + strArr[length], true);
                 }
             }
+
+            //压缩该文件
+            
+
             MessageBox.Show("生成版本成功");
+            log.Info("生成配置文件版本：" + player.ConfigFileName);
         }
 
         //删除指定目录下的文件

@@ -328,3 +328,10 @@ ASALocalRun/
 
 # MFractors (Xamarin productivity tool) working folder 
 .mfractor/
+
+WpfApp1/.vs/*
+WpfApp1/WpfApp1/bin/Debug/*
+WpfApp1/WpfApp1/obj/Debug/*
+WpfApp1/prototypeTeamThree/*
+WpfApp1/prototypeTeamThree/Debug/prototypeTeamThree.msi
+pre_zip/*

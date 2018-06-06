@@ -39,6 +39,8 @@ namespace WpfApp1
     /// </summary>
     public partial class NewConfigureFilePage : Page
     {
+        private static readonly log4net.ILog log =
+           log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         [DllImport("kernel32")]
         private static extern long WritePrivateProfileString(
             string section, string key, string value, string filePath);
@@ -49,10 +51,11 @@ namespace WpfApp1
         public NewConfigureFilePage()
         {
             InitializeComponent();
+            log.Info("加载 NewConfigureFilePage");
             DataGridForNew.ItemsSource = infos;
         }
 
-        private void btnAdd_Click(object sender, RoutedEventArgs e)
+        private void BtnAdd_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.InitialDirectory = System.IO.Directory.GetCurrentDirectory() + "\\Server";
@@ -60,9 +63,10 @@ namespace WpfApp1
             {
                 infos.Add(new Info { path = ofd.FileName, way = ""});
             }
+
         }
 
-        private void btnRemove_Click(object sender, RoutedEventArgs e)
+        private void BtnRemove_Click(object sender, RoutedEventArgs e)
         {
             if(DataGridForNew.SelectedItem != null)
             {
@@ -81,7 +85,7 @@ namespace WpfApp1
             }
         }
 
-        private void btnSave_Click(object sender, RoutedEventArgs e)
+        private void BtnSave_Click(object sender, RoutedEventArgs e)
         {
             List<File> configFiles = new List<File>();
             for (int i = 0; i < infos.Count; i++)
@@ -92,7 +96,7 @@ namespace WpfApp1
             }
 
             SaveFileDialog sfd = new SaveFileDialog();
-            string currentPath = System.IO.Directory.GetCurrentDirectory() + "\\Server";
+            string currentPath = System.IO.Directory.GetCurrentDirectory() + @"\Server";
             string configureListDir = System.IO.Path.Combine(currentPath, "configureList");
             if (!System.IO.Directory.Exists(configureListDir))
             {
@@ -114,6 +118,7 @@ namespace WpfApp1
                     WritePrivateProfileString("session" + i, "path", f.Path, sfd.FileName);
                 }
                 MessageBox.Show("保存成功");
+                log.Info("另存配置文件: " + sfd.SafeFileName + "成功");
             }
             else
             {

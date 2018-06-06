@@ -33,9 +33,9 @@
             </DataGrid.Columns>
         </DataGrid>
         <Grid>
-            <Button Name ="btnAdd" Content="新增" HorizontalAlignment="Left" Margin="158,255,0,0" VerticalAlignment="Top" Width="75" Height="30" Click="btnAdd_Click"/>
-            <Button Name ="btnRemove" Content="删除" HorizontalAlignment="Left" Margin="356,255,0,0" VerticalAlignment="Top" Width="74" Height="30" Click="btnRemove_Click"/>
-            <Button Name ="btnSave" Content="保存" HorizontalAlignment="Left" Margin="557,255,0,0" VerticalAlignment="Top" Width="75" Height="30" RenderTransformOrigin="1.513,0.767" Click="btnSave_Click"/>
+            <Button Name ="btnAdd" Content="新增" HorizontalAlignment="Left" Margin="158,255,0,0" VerticalAlignment="Top" Width="75" Height="30" Click="BtnAdd_Click"/>
+            <Button Name ="btnRemove" Content="删除" HorizontalAlignment="Left" Margin="356,255,0,0" VerticalAlignment="Top" Width="74" Height="30" Click="BtnRemove_Click"/>
+            <Button Name ="btnSave" Content="保存" HorizontalAlignment="Left" Margin="557,255,0,0" VerticalAlignment="Top" Width="75" Height="30" RenderTransformOrigin="1.513,0.767" Click="BtnSave_Click"/>
         </Grid>
     </Grid>
 </Page>

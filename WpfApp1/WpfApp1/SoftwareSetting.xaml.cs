@@ -1,18 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Forms;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace WpfApp1
 {
@@ -21,37 +10,26 @@ namespace WpfApp1
     /// </summary>
     public partial class SoftwareSetting : Window
     {
+        private static readonly log4net.ILog log =
+    log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         string currentPath = System.IO.Directory.GetCurrentDirectory();
-        string UrlPath = System.IO.Directory.GetCurrentDirectory() + "//url.txt";
+        string UrlPath = System.IO.Directory.GetCurrentDirectory() + @"/url.txt";
         public SoftwareSetting()
         {
             InitializeComponent();
+            log.Info("加载SoftwareSetting");
             InitUrl();
         }
 
         private void InitUrl()
         {
-            if (!System.IO.File.Exists(UrlPath))
+
+            StreamReader sr = new StreamReader(UrlPath, Encoding.Default);
+            String line;
+            while ((line = sr.ReadLine()) != null)
             {
-                this.URLText.Text = currentPath;
-                using (FileStream fs = new FileStream(UrlPath, FileMode.Create, FileAccess.Write))
-                {
-                    using (StreamWriter sw = new StreamWriter(fs, Encoding.UTF8))
-                    {
-                        sw.WriteLine(this.URLText.Text.Trim());
-                    }
-                }
+                this.URLText.Text = line;
             }
-            else
-            {
-                StreamReader sr = new StreamReader(UrlPath, Encoding.Default);
-                String line;
-                while ((line = sr.ReadLine()) != null)
-                {
-                    this.URLText.Text = line;
-                }
-            }
-            
         }
 
         public static bool CheckUri(string strUri)
@@ -77,16 +55,17 @@ namespace WpfApp1
             }
         }
 
-        private void sureButton_Click(object sender, RoutedEventArgs e)
+        private void SureButton_Click(object sender, RoutedEventArgs e)
         {
             //检查一下是否合法 
             if (!CheckUri(this.URLText.Text.Trim()))
             {
                 System.Windows.MessageBox.Show("URL不合法", "ERROR");
+                log.Error("URL不合法");
             }
             else
             {
-                //把URL存入本地文件？
+                //把URL存入本地文件
                 using (FileStream fs = new FileStream(UrlPath, FileMode.Create, FileAccess.Write))
                 {
                     using (StreamWriter sw = new StreamWriter(fs, Encoding.UTF8))
@@ -99,7 +78,7 @@ namespace WpfApp1
             
         }
 
-        private void cancelButton_Click(object sender, RoutedEventArgs e)
+        private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
         }

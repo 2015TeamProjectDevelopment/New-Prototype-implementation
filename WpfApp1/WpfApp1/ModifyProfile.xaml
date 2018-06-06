@@ -31,10 +31,10 @@
             </DataGrid.Columns>
         </DataGrid>
         <Grid>
-            <Button Name ="btnAdd" Content="新增" HorizontalAlignment="Left" Margin="285,355,0,0" VerticalAlignment="Top" Width="75" Height="30" RenderTransformOrigin="0.896,0.306" Click="btnAdd_Click"/>
-            <Button Name ="btnRemove" Content="删除" HorizontalAlignment="Left" Margin="424,355,0,0" VerticalAlignment="Top" Width="74" Height="30" Click="btnRemove_Click"/>
-            <Button Name ="btnSave" Content="取消" HorizontalAlignment="Left" Margin="563,355,0,0" VerticalAlignment="Top" Width="75" Height="30" RenderTransformOrigin="1.513,0.767" Click="btnCancel_Click"/>
-            <Button Name ="btnSaveAs" Content="另存为" HorizontalAlignment="Left" Margin="152,355,0,0" VerticalAlignment="Top" Width="75" Height="30" Click="btnSaveAs_Click"/>
+            <Button Name ="btnAdd" Content="新增" HorizontalAlignment="Left" Margin="285,355,0,0" VerticalAlignment="Top" Width="75" Height="30" RenderTransformOrigin="0.896,0.306" Click="BtnAdd_Click"/>
+            <Button Name ="btnRemove" Content="删除" HorizontalAlignment="Left" Margin="424,355,0,0" VerticalAlignment="Top" Width="74" Height="30" Click="BtnRemove_Click"/>
+            <Button Name ="btnSave" Content="取消" HorizontalAlignment="Left" Margin="563,355,0,0" VerticalAlignment="Top" Width="75" Height="30" RenderTransformOrigin="1.513,0.767" Click="BtnCancel_Click"/>
+            <Button Name ="btnSaveAs" Content="另存为" HorizontalAlignment="Left" Margin="152,355,0,0" VerticalAlignment="Top" Width="75" Height="30" Click="BtnSaveAs_Click"/>
             <Label Content="配置文件名称：" HorizontalAlignment="Left" Margin="404,67,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.75,1"/>
             <TextBox Name ="FileNameText"  HorizontalAlignment="Left" Height="23" Margin="518,69,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
         </Grid>

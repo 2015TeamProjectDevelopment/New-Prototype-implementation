@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -21,17 +22,18 @@ namespace WpfApp1
     /// </summary>
     public partial class UpdateSoftwarePage : Page
     {
+        private static readonly log4net.ILog log =
+    log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         ConfigList cfPC, cfServer;
         public UpdateSoftwarePage()
         {
             InitializeComponent();
-            //CommandBinding bindingNew = new CommandBinding(ApplicationCommands.New);
-            //bindingNew.Executed += NewCommand;
-            //this.CommandBindings.Add(bindingNew);
+            log.Info("加载UpdateSofewarePage");
         }
 
         private void Button_Check(object sender, RoutedEventArgs e)
         {
+            log.Info("检查更新");
             // 获取PC的 ini 文件
             cfPC = GetPCIni();
             int PCIniHash = 0;
@@ -90,42 +92,42 @@ namespace WpfApp1
         private ConfigList GetServerIni()
         {
             string current = System.IO.Directory.GetCurrentDirectory();
-            StreamReader sr = new StreamReader(current + "//url.txt", Encoding.Default);
+            StreamReader sr = new StreamReader(current + @"\url.txt", Encoding.Default);
             string line;
-            string urlPath = "";
+            string url = "";
             while ((line = sr.ReadLine()) != null)
             {
-                Uri uriAddress = new Uri(line);
-                urlPath = uriAddress.LocalPath;
+                url = new Uri(line).LocalPath;
+                Console.WriteLine(url);
+                Console.WriteLine(line);
             }
-            if (Directory.Exists(urlPath))
+
+            if (Directory.Exists(url))
             {
-                string path = urlPath + "\\newestFolder";
-                if (!System.IO.Directory.Exists(path))
-                {
-                    System.IO.Directory.CreateDirectory(path);
-                }
-                DirectoryInfo fileFold = new DirectoryInfo(path);
+                DirectoryInfo fileFold = new DirectoryInfo(url);
                 FileInfo[] files = fileFold.GetFiles();
                 foreach (FileInfo content in fileFold.GetFiles())
                 {
                     if (content.Extension == ".ini")
                     {
-                        string tempDir = current + "\\PC\\temp";
+                        string tempDir = current + @"\PC\temp";
                         if (!System.IO.Directory.Exists(tempDir))
                         {
                             System.IO.Directory.CreateDirectory(tempDir);
                         }
                         ConfigureFileListPage.DeleteFolder(tempDir);
-                        //存在 下载（复制）下来进行比较
-                        System.IO.File.Copy(content.FullName, tempDir + "\\" + content.Name
-                                , true);
+                        //存在 下载下来进行比较
+                        WebClient webClient = new WebClient();
+                        //url，加上content文件名，然后下载
+                        url = url + @"\" + content.Name;
+                        string downloadPath = tempDir + "\\" + content.Name;
+                        webClient.DownloadFile(url, downloadPath);
+                        
                         ConfigList config1 = new ConfigList(content.Name, content.LastWriteTime, false, tempDir + "\\" + content.Name);
                         config1.ConfigFileHashCode = config1.GetHashCode();
                         //删除temp文件夹
                         Directory.Delete(tempDir, true);
-                        return config1;
-                        
+                        return config1; 
                     }
                 }
             }

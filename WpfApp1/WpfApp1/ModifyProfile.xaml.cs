@@ -3,19 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using System.Windows.Threading;
 
 namespace WpfApp1
 {
@@ -23,42 +13,43 @@ namespace WpfApp1
     /// ModifyProfile.xaml 的交互逻辑
     /// </summary>
     /// 
-
     public partial class ModifyProfile : Window
     {
+        private static readonly log4net.ILog log =
+            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         [DllImport("kernel32")]
         private static extern long WritePrivateProfileString(
-    string section, string key, string value, string filePath);
-
+            string section, string key, string value, string filePath);
+        //存储DataGrid中的信息
         ObservableCollection<Info> infos = new ObservableCollection<Info>
             {
-            };
+            }; 
 
         public ModifyProfile()
         {
             InitializeComponent();
-
+            log.Info("加载ModifyProfile");
             DataGridForChange.ItemsSource = GetFileMessage();
         }
 
-        private void btnAdd_Click(object sender, RoutedEventArgs e)
+        private void BtnAdd_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog ofd = new OpenFileDialog();
-            ofd.InitialDirectory = System.IO.Directory.GetCurrentDirectory() + "\\Server";
+            ofd.InitialDirectory = System.IO.Directory.GetCurrentDirectory() + @"\Server";
             if (ofd.ShowDialog() == true)
             {
                 infos.Add(new Info { path = ofd.FileName, way = "" });
             }
         }
 
-        private void btnRemove_Click(object sender, RoutedEventArgs e)
+        private void BtnRemove_Click(object sender, RoutedEventArgs e)
         {
             if (DataGridForChange.SelectedItem != null)
             {
                 Info DRV = (Info)DataGridForChange.SelectedItem;
                 String name = DRV.path;
 
-                //删除infos里面的数据
+                //删除infos里对应的数据
                 for (int i = 0; i < infos.Count; i++)
                 {
                     if (infos[i].path.CompareTo(name) == 0)
@@ -70,16 +61,16 @@ namespace WpfApp1
             }
         }
 
-        private void btnCancel_Click(object sender, RoutedEventArgs e)
+        private void BtnCancel_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
         }
 
-        private void btnSaveAs_Click(object sender, RoutedEventArgs e)
+        private void BtnSaveAs_Click(object sender, RoutedEventArgs e)
         {
             SaveFileDialog sfd = new SaveFileDialog();
             string currentPath = System.IO.Directory.GetCurrentDirectory();
-            string configureListDir = System.IO.Path.Combine(currentPath + "\\Server", "configureList");
+            string configureListDir = System.IO.Path.Combine(currentPath + @"\Server\configureList");
             if (!System.IO.Directory.Exists(configureListDir))
             {
                 System.IO.Directory.CreateDirectory(configureListDir);
@@ -96,7 +87,7 @@ namespace WpfApp1
                     File file = new File(fileInfo.Name, fileInfo.Length, infos[i].way, fileInfo.LastWriteTime.ToString(), fileInfo.FullName);
                     configFiles.Add(file);
                 }
-
+                //写入ini文件
                 for (int i = 0; i < configFiles.Count; i++)
                 {
                     File f = configFiles[i];
@@ -108,6 +99,7 @@ namespace WpfApp1
                     WritePrivateProfileString("session" + i, "path", f.Path, sfd.FileName);
                 }
                 MessageBox.Show("保存成功");
+                log.Info("另存配置文件: "+sfd.SafeFileName + "成功");
             }
             else
             {
@@ -119,9 +111,9 @@ namespace WpfApp1
         {
             infos.Clear();
             string fileDir = Environment.CurrentDirectory;
-            
-            String fileDirResp = Read(fileDir+ "\\fileName.txt");
-            string configureListDir = System.IO.Path.Combine(fileDir + "\\Server", "configureList");
+            //fileName.txt缓存选中的行
+            String fileDirResp = Read(fileDir + @"\fileName.txt");
+            string configureListDir = System.IO.Path.Combine(fileDir + @"\Server\configureList");
             if (!System.IO.Directory.Exists(configureListDir))
             {
                 System.IO.Directory.CreateDirectory(configureListDir);
@@ -131,10 +123,9 @@ namespace WpfApp1
             this.FileNameText.Text = fileDirResp;
             for (int i = 0; files != null && i < files.Length; i++)  //将文件信息添加到List里面  
             {
-                //fileDirResp = Encoding.UTF8.GetString(Encoding.Default.GetBytes(fileDirResp));
                 if (files[i].Name == fileDirResp)   //挑选出符合条件的信息  
                 {
-                    IniFiles ini_file_read = new IniFiles(configureListDir + "\\"+fileDirResp);
+                    IniFiles ini_file_read = new IniFiles(configureListDir + @"\"+fileDirResp);
                     for(int j = 0; j < 10000; j++)
                     {
                         String tem_path = "session"+j.ToString();
@@ -148,8 +139,7 @@ namespace WpfApp1
                         infos.Add(new Info { path = tem_file_path, way = tem_file_updateMethod });
                     }
                     break;
-                }
-                 
+                }  
             }
             return infos;
         }
@@ -161,6 +151,5 @@ namespace WpfApp1
             line = sr.ReadLine();
             return line;
         }
-
     }
 }

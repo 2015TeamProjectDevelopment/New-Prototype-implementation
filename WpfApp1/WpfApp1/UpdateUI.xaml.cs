@@ -22,6 +22,8 @@ namespace WpfApp1
     /// </summary>
     public partial class UpdateUI : Window
     {
+        private static readonly log4net.ILog log =
+            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private ConfigList cfPC;
         private ConfigList cfServer;
         private string downloadPath;
@@ -30,6 +32,7 @@ namespace WpfApp1
         public UpdateUI(ConfigList cfPC, ConfigList cfServer)
         {
             InitializeComponent();
+            log.Info("加载UpdateUI");
             this.cfPC = cfPC;
             this.cfServer = cfServer;
             showDiff();
@@ -65,18 +68,23 @@ namespace WpfApp1
         //执行更新操作
         private void download()
         {
+            if(cfServer == null)
+            {
+                return;
+            }
             //根据下载下来的配置文件名字 到服务器指定目录下寻找版本文件目录
             string subFolderName = cfServer.ConfigFileName.Replace('.', '_'); //版本文件目录名字
-            StreamReader sr = new StreamReader(current + "//url.txt", Encoding.Default);
-            string line;
-            string urlPath = "";
-            while ((line = sr.ReadLine()) != null)
-            {
-                Uri uriAddress = new Uri(line);
-                urlPath = uriAddress.LocalPath;
-            }
-            string ServerPath = System.IO.Path.Combine(urlPath, "versionFolder");
-            string srcPath = System.IO.Path.Combine(ServerPath, subFolderName);//源文件夹
+            //StreamReader sr = new StreamReader(current + "//url.txt", Encoding.Default);
+            //string line;
+            //string urlPath = "";
+            //while ((line = sr.ReadLine()) != null)
+            //{
+            //    Uri uriAddress = new Uri(line);
+            //    urlPath = uriAddress.LocalPath;
+            //}
+            string ServerPath = System.IO.Path.Combine(current, "Server");
+            string VersionPath = System.IO.Path.Combine(ServerPath, "versionFolder");
+            string srcPath = System.IO.Path.Combine(VersionPath, subFolderName);//源文件夹
             //Console.WriteLine(srcPath);
             if (!System.IO.Directory.Exists(srcPath))
             {
@@ -91,11 +99,11 @@ namespace WpfApp1
                 System.IO.Directory.CreateDirectory(destPath);
             }
             //下载
-            CopyDirectory(srcPath, destPath);
+            DownloadDirectory(srcPath, destPath);
         }
 
         //下载操作 这里只是 复制复制复制。。
-        private void CopyDirectory(string srcPath, string destPath)
+        private void DownloadDirectory(string srcPath, string destPath)
         {
             try
             {
@@ -109,7 +117,7 @@ namespace WpfApp1
                         {
                             Directory.CreateDirectory(destPath + "\\" + i.Name);   //目标目录下不存在此文件夹即创建子文件夹
                         }
-                        CopyDirectory(i.FullName, destPath + "\\" + i.Name);    //递归调用复制子文件夹
+                        DownloadDirectory(i.FullName, destPath + "\\" + i.Name);    //递归调用复制子文件夹
                     }
                     else
                     {

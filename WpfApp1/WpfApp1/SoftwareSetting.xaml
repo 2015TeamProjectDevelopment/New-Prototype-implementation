@@ -19,8 +19,8 @@
         </Label>
         <Label Content="更新URL：" HorizontalAlignment="Left" Margin="111,68,0,0" VerticalAlignment="Top" Width="80" FontSize="14"/>
         <TextBox x:Name="URLText"  HorizontalAlignment="Left" Height="48" Margin="116,98,0,0" TextWrapping="Wrap" Text="https://www.baidu.com" VerticalAlignment="Top" Width="211" />
-        <Button Content="确定" HorizontalAlignment="Left" Margin="116,158,0,0" VerticalAlignment="Top" Width="75" Click="sureButton_Click"/>
-        <Button Content="取消" HorizontalAlignment="Left" Margin="247,158,0,0" VerticalAlignment="Top" Width="75" Click="cancelButton_Click"/>
+        <Button Content="确定" HorizontalAlignment="Left" Margin="116,158,0,0" VerticalAlignment="Top" Width="75" Click="SureButton_Click"/>
+        <Button Content="取消" HorizontalAlignment="Left" Margin="247,158,0,0" VerticalAlignment="Top" Width="75" Click="CancelButton_Click"/>
 
     </Grid>
 </Window>

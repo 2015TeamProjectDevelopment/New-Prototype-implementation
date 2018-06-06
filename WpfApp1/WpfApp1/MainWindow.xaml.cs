@@ -1,19 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace WpfApp1
 {
@@ -23,6 +13,9 @@ namespace WpfApp1
     /// </summary>
     public partial class MainWindow : Window
     {
+        private static readonly log4net.ILog log =
+            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         NewConfigureFilePage newConfigureFilePage = new NewConfigureFilePage();
         ConfigureFileListPage ConfigureFileListPage = new ConfigureFileListPage();
         UpdateSoftwarePage updateSoftwarePage = new UpdateSoftwarePage();
@@ -30,28 +23,36 @@ namespace WpfApp1
         public MainWindow()
         {
             InitializeComponent();
-            initTestFile();
-            setUrltxt();
+            log.Info("加载MainWindow");
+
+            InitTestFile();
+            log.Info("初始化testfile");
+
+            SetUrltxt();
+            log.Info("设置初始url");
+
             MainFrame.Navigate(newConfigureFilePage);
+            log.Info("设置初始页面 newConfigureFilePage ");
         }
         
-        private void setUrltxt()
+        private void SetUrltxt()
         {
             string currentPath = System.IO.Directory.GetCurrentDirectory();
-            string UrlPath = System.IO.Directory.GetCurrentDirectory() + "//url.txt";
+            string UrlPath = System.IO.Directory.GetCurrentDirectory() + @"\url.txt";
             if (!System.IO.File.Exists(UrlPath))
             {
                 using (FileStream fs = new FileStream(UrlPath, FileMode.Create, FileAccess.Write))
                 {
                     using (StreamWriter sw = new StreamWriter(fs, Encoding.UTF8))
                     {
-                        sw.WriteLine("file://" + currentPath +"\\Server");
+                        sw.WriteLine("file://" + currentPath + @"\Server\newestFolder");
                     }
                 }
             }
         }
 
-        public void initTestFile()
+        //初始化几个测试的txt文件
+        public void InitTestFile()
         {
             string currentdir = System.IO.Directory.GetCurrentDirectory();
             string PCDir = System.IO.Path.Combine(currentdir, "PC");
@@ -59,15 +60,20 @@ namespace WpfApp1
             if (!System.IO.Directory.Exists(PCDir))
             {
                 System.IO.Directory.CreateDirectory(PCDir);
-                new FileStream(PCDir+ "\\deletefile.txt", FileMode.CreateNew);
-                new FileStream(PCDir + "\\replacefile.txt", FileMode.CreateNew);
+                new FileStream(PCDir+ @"\deletefile.txt", FileMode.CreateNew);
+                new FileStream(PCDir + @"\replacefile.txt", FileMode.CreateNew);
             }
             if (!System.IO.Directory.Exists(ServerDir))
             {
                 System.IO.Directory.CreateDirectory(ServerDir);
-                new FileStream(ServerDir + "\\newfile.txt", FileMode.CreateNew);
-                new FileStream(ServerDir + "\\deletefile.txt", FileMode.CreateNew);
-                new FileStream(ServerDir + "\\replacefile.txt", FileMode.CreateNew);
+                new FileStream(ServerDir + @"\newfile.txt", FileMode.CreateNew);
+                new FileStream(ServerDir + @"\deletefile.txt", FileMode.CreateNew);
+                new FileStream(ServerDir + @"\replacefile.txt", FileMode.CreateNew);
+                string path = System.IO.Path.Combine(ServerDir, "newestFolder");
+                if (!System.IO.Directory.Exists(path))
+                {
+                    System.IO.Directory.CreateDirectory(path);
+                }
             }
         }
 
@@ -79,26 +85,31 @@ namespace WpfApp1
             SWSetting.Owner = this;
             SWSetting.Title = "基本设置";
             SWSetting.ShowDialog();
+            log.Info("点击设置-关于本产品，进入基本设置");
         }
 
         private void Button_Page_List(object sender, RoutedEventArgs e)
         {
             MainFrame.Navigate(ConfigureFileListPage);
+            log.Info("点击配置文件列表，跳转到列表页");
         }
 
         private void Button_Page_New(object sender, RoutedEventArgs e)
         {
             MainFrame.Navigate(newConfigureFilePage);
+            log.Info("点击新建配置文件，跳转到新建页");
         }
 
         private void Button_Page_Update(object sender, RoutedEventArgs e)
         {
             MainFrame.Navigate(updateSoftwarePage);
+            log.Info("点击更新软件，跳转到更新页");
         }
 
         private void MenuItem_Click_exit(object sender, RoutedEventArgs e)
         {
             this.Close();
+            log.Info("点击管理-退出，退出程序");
         }
     }
 
@@ -146,6 +157,7 @@ namespace WpfApp1
 
     }
 
+    //配置文件列表类
     public class ConfigList
     {
         private string configFileName;
@@ -180,7 +192,7 @@ namespace WpfApp1
         public override int GetHashCode()
         {
             var hashCode = -159444910;
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(configFileName);
+            //hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(configFileName);
             hashCode = hashCode * -1521134295 + configFileModificationTime.GetHashCode();
             return hashCode;
         }
@@ -259,7 +271,7 @@ namespace WpfApp1
         public override int GetHashCode()
         {
             var hashCode = 2096143202;
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(fileName);
+            //hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(fileName);
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(fileSize.ToString());
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(updateMethod);
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(lastModified);
@@ -268,5 +280,4 @@ namespace WpfApp1
         }
     }
 
-       
 }
