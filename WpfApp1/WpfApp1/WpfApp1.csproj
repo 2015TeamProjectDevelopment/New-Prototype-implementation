@@ -62,6 +62,7 @@
       <DependentUpon>ConfigureFileListPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="LogHelper.cs" />
+    <Compile Include="MDfive.cs" />
     <Compile Include="ModifyProfile.xaml.cs">
       <DependentUpon>ModifyProfile.xaml</DependentUpon>
     </Compile>

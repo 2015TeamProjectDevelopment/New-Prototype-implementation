@@ -1,18 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+using System.Net;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace WpfApp1
 {
@@ -43,91 +32,54 @@ namespace WpfApp1
         private void showDiff()
         {
             string sText = "";
-            string oldVersion = "", newVersion = "";
             string oldHash = "", newHash = "";
 
             if(cfPC != null)
             {
                 string name = cfPC.ConfigFileName;
-                oldVersion = name.Substring(0, name.Length - 4);
-                oldHash  = cfPC.ConfigFileHashCode.ToString();
+                oldHash  = cfPC.ConfigFileMD5Code;
             }
-            sText += "当前版本：" + oldVersion + "\n";
             sText += "哈希值：" + oldHash + "\n";
             if (cfServer != null)
             {
                 string name = cfServer.ConfigFileName;
-                newVersion =  name.Substring(0, name.Length - 4);
-                newHash = cfServer.ConfigFileHashCode.ToString();
+                newHash = cfServer.ConfigFileMD5Code;
             }
-            sText += "\n" + "新版本：" + newVersion + "\n";
             sText += "哈希值：" + newHash + "\n";
             textblock.Text = sText;
         }
 
-        //执行更新操作
+        // 执行更新操作
+        // 读取已下载的ini 然后一个一个进行下载
         private void download()
         {
             if(cfServer == null)
             {
                 return;
             }
-            //根据下载下来的配置文件名字 到服务器指定目录下寻找版本文件目录
-            string subFolderName = cfServer.ConfigFileName.Replace('.', '_'); //版本文件目录名字
-            //StreamReader sr = new StreamReader(current + "//url.txt", Encoding.Default);
-            //string line;
-            //string urlPath = "";
-            //while ((line = sr.ReadLine()) != null)
-            //{
-            //    Uri uriAddress = new Uri(line);
-            //    urlPath = uriAddress.LocalPath;
-            //}
-            string ServerPath = System.IO.Path.Combine(current, "Server");
-            string VersionPath = System.IO.Path.Combine(ServerPath, "versionFolder");
-            string srcPath = System.IO.Path.Combine(VersionPath, subFolderName);//源文件夹
-            //Console.WriteLine(srcPath);
-            if (!System.IO.Directory.Exists(srcPath))
-            {
-                MessageBox.Show("源文件夹不存在", "ERROR");
-                return;
-            }
-            string PcPath = current + "\\PC";
-            string destPath = System.IO.Path.Combine(PcPath, subFolderName); // 目标文件夹
+            string PcPath = current + @"\PC";
+            string destPath = PcPath + @"\temp"; // 目标文件夹
             downloadPath = destPath;
+            Console.WriteLine(downloadPath);
             if (!System.IO.Directory.Exists(destPath))
             {
                 System.IO.Directory.CreateDirectory(destPath);
             }
-            //下载
-            DownloadDirectory(srcPath, destPath);
-        }
 
-        //下载操作 这里只是 复制复制复制。。
-        private void DownloadDirectory(string srcPath, string destPath)
-        {
-            try
+            IniFiles ini_file_read = new IniFiles(current + @"\PC\temp\temp.ini");
+            WebClient webClient = new WebClient();
+            for (int j = 0; j < 10000; j++)
             {
-                DirectoryInfo dir = new DirectoryInfo(srcPath);
-                FileSystemInfo[] fileinfo = dir.GetFileSystemInfos();  //获取目录下（不包含子目录）的文件和子目录
-                foreach (FileSystemInfo i in fileinfo)
+                String temp_session = "session" + j.ToString();
+                String temp_file_name = ini_file_read.IniReadvalue(temp_session, "fileName");
+                String temp_file_path = ini_file_read.IniReadvalue(temp_session, "path");
+                if (temp_file_path == "")
                 {
-                    if (i is DirectoryInfo)     //判断是否文件夹
-                    {
-                        if (!Directory.Exists(destPath + "\\" + i.Name))
-                        {
-                            Directory.CreateDirectory(destPath + "\\" + i.Name);   //目标目录下不存在此文件夹即创建子文件夹
-                        }
-                        DownloadDirectory(i.FullName, destPath + "\\" + i.Name);    //递归调用复制子文件夹
-                    }
-                    else
-                    {
-                        System.IO.File.Copy(i.FullName, destPath + "\\" + i.Name, true);      //不是文件夹即复制文件，true表示可以覆盖同名文件
-                    }
+                    break;
                 }
-            }
-            catch (Exception e)
-            {
-                throw e;
+                // 每一个都使用url进行下载
+                temp_file_path = "file://" + temp_file_path;
+                webClient.DownloadFile(temp_file_path, downloadPath + @"\" + temp_file_name);
             }
         }
 
@@ -137,6 +89,7 @@ namespace WpfApp1
             download();
             //读取配置文件并进行操作
             DirectoryInfo fileFold = new DirectoryInfo(downloadPath);
+            
             FileInfo[] files = fileFold.GetFiles();
             string PcPath = current + "\\PC";
             string IniName = "";
@@ -181,7 +134,6 @@ namespace WpfApp1
                             System.Diagnostics.Process.Start(@".\update_its.exe", targetSoftwarePath);
                             UpdatePCini(PcPath, IniName);
                             Environment.Exit(0);
-
                         }
                     }
                     break;
@@ -207,9 +159,11 @@ namespace WpfApp1
                     break;
                 }
             }
+            
             //复制新的进去
-            System.IO.File.Copy(downloadPath + "\\" + IniName,
+            System.IO.File.Copy(downloadPath + @"\temp.ini",
                 PcPath + "\\" + IniName, true);
+            System.IO.File.Move(PcPath + @"\temp.ini", PcPath + "\\newest.ini");
         }
 
         //取消更新

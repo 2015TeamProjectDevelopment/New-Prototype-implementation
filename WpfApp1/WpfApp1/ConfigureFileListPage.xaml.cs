@@ -56,7 +56,7 @@ namespace WpfApp1
                     if (files[i].Extension == ".ini")   //挑选出符合条件的信息  
                     {
                         ConfigList config1 = new ConfigList(files[i].Name, files[i].LastWriteTime, false, configureListDir + "\\"+ files[i].Name);
-                        config1.ConfigFileHashCode = config1.GetHashCode();
+                        config1.ConfigFileMD5Code = config1.GetConfigFileMD5Code();
                         config2.Add(config1);
                     }
                     else
@@ -120,6 +120,7 @@ namespace WpfApp1
                 }
                 DeleteFolder(newestVersion);//删除
                 System.IO.File.Copy(player.ConfigFilePath, newestVersion + "\\" + fileName, true);
+                System.IO.File.Move(newestVersion + "\\" + fileName, newestVersion + "\\newest.ini");
             }
 
             //判断文件夹是否存在，文件夹设置在哪里比较合适呢？

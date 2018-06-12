@@ -31,22 +31,22 @@ namespace WpfApp1
             log.Info("加载UpdateSofewarePage");
         }
 
-        private void Button_Check(object sender, RoutedEventArgs e)
+        private void Button_Update(object sender, RoutedEventArgs e)
         {
-            log.Info("检查更新");
+            log.Info("点击更新");
             // 获取PC的 ini 文件
             cfPC = GetPCIni();
-            int PCIniHash = 0;
+            string PCIniHash = "";
             if (cfPC != null)
-                PCIniHash = cfPC.ConfigFileHashCode;
+                PCIniHash = cfPC.ConfigFileMD5Code;
             // 获取Server的 ini 文件
             cfServer = GetServerIni();
-            int ServerIniHash = 0;
+            string ServerIniHash = "";
             if (cfServer != null)
-                ServerIniHash = cfServer.ConfigFileHashCode;
+                ServerIniHash = cfServer.ConfigFileMD5Code;
 
-            //Console.WriteLine(PCIniHash);
-            //Console.WriteLine(ServerIniHash);
+            Console.WriteLine(PCIniHash);
+            Console.WriteLine(ServerIniHash);
 
             // 如果文件hash码不同，进行更新
             if(PCIniHash != ServerIniHash)
@@ -77,7 +77,7 @@ namespace WpfApp1
                     if (files[i].Extension == ".ini")   //挑选出符合条件的信息  
                     {
                         ConfigList config1 = new ConfigList(files[i].Name, files[i].LastWriteTime, false, PCDir + "\\" + files[i].Name);
-                        config1.ConfigFileHashCode = config1.GetHashCode();
+                        config1.ConfigFileMD5Code = config1.GetConfigFileMD5Code();
                         return config1;
                     }
                     else
@@ -97,41 +97,34 @@ namespace WpfApp1
             string url = "";
             while ((line = sr.ReadLine()) != null)
             {
-                url = new Uri(line).LocalPath;
-                Console.WriteLine(url);
-                Console.WriteLine(line);
+                url = line;
+                //Console.WriteLine(url);
+                //Console.WriteLine(line);
             }
+            //Uri uri = new Uri(url);
+            //if (uri.IsFile)
+            //{
+            //    string urifilepath = uri.LocalPath;
+            //    if(!System.IO.File.Exists(urifilepath))
+            //        return null;
+            //}
 
-            if (Directory.Exists(url))
+            string tempDir = current + @"\PC\temp";
+            if (!System.IO.Directory.Exists(tempDir))
             {
-                DirectoryInfo fileFold = new DirectoryInfo(url);
-                FileInfo[] files = fileFold.GetFiles();
-                foreach (FileInfo content in fileFold.GetFiles())
-                {
-                    if (content.Extension == ".ini")
-                    {
-                        string tempDir = current + @"\PC\temp";
-                        if (!System.IO.Directory.Exists(tempDir))
-                        {
-                            System.IO.Directory.CreateDirectory(tempDir);
-                        }
-                        ConfigureFileListPage.DeleteFolder(tempDir);
-                        //存在 下载下来进行比较
-                        WebClient webClient = new WebClient();
-                        //url，加上content文件名，然后下载
-                        url = url + @"\" + content.Name;
-                        string downloadPath = tempDir + "\\" + content.Name;
-                        webClient.DownloadFile(url, downloadPath);
-                        
-                        ConfigList config1 = new ConfigList(content.Name, content.LastWriteTime, false, tempDir + "\\" + content.Name);
-                        config1.ConfigFileHashCode = config1.GetHashCode();
-                        //删除temp文件夹
-                        Directory.Delete(tempDir, true);
-                        return config1; 
-                    }
-                }
+                System.IO.Directory.CreateDirectory(tempDir);
             }
-            return null;
+            ConfigureFileListPage.DeleteFolder(tempDir);
+            //存在 下载下来进行比较
+            WebClient webClient = new WebClient();
+            string downloadPath = tempDir + "\\temp.ini";
+            webClient.DownloadFile(url, downloadPath);
+            System.IO.FileInfo f = new System.IO.FileInfo(downloadPath);
+            ConfigList config1 = new ConfigList("temp.ini", f.LastWriteTime, false, downloadPath);
+            config1.ConfigFileMD5Code = config1.GetConfigFileMD5Code();
+            //删除temp文件夹
+            //Directory.Delete(tempDir, true);
+            return config1;
         }
     }
 }

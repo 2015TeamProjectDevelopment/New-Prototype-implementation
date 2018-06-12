@@ -11,7 +11,7 @@
     <StackPanel>
         <TextBlock xml:space="preserve" x:Name="textblock" HorizontalAlignment="Left" Margin="60,10,10,10" TextWrapping="Wrap" 
                VerticalAlignment="Top"/>
-        <Button x:Name="Check" Content="更新" HorizontalAlignment="Left" Width="auto" Margin="60,50,50,212" Height="25" VerticalAlignment="Bottom" Click="Button_Check"/>
+        <Button x:Name="Check" Content="更新" HorizontalAlignment="Left" Width="auto" Margin="60,50,50,212" Height="25" VerticalAlignment="Bottom" Click="Button_Update"/>
 
     </StackPanel>
 

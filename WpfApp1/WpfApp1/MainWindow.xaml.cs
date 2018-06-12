@@ -45,7 +45,7 @@ namespace WpfApp1
                 {
                     using (StreamWriter sw = new StreamWriter(fs, Encoding.UTF8))
                     {
-                        sw.WriteLine("file://" + currentPath + @"\Server\newestFolder");
+                        sw.WriteLine("file://" + currentPath + @"\Server\newestFolder\newest.ini");
                     }
                 }
             }
@@ -162,7 +162,7 @@ namespace WpfApp1
     {
         private string configFileName;
         private System.DateTime configFileModificationTime;
-        private int configFileHashCode;
+        private string configFileMD5Code;
         private bool isVersion;
         private string configFilePath;
 
@@ -177,7 +177,7 @@ namespace WpfApp1
 
         public string ConfigFileName { get => configFileName; set => configFileName = value; }
         public System.DateTime ConfigFileModificationTime { get => configFileModificationTime; set => configFileModificationTime = value; }
-        public int ConfigFileHashCode { get => configFileHashCode; set => configFileHashCode = value; }
+        public string ConfigFileMD5Code { get => configFileMD5Code; set => configFileMD5Code = value; }
         public bool IsVersion { get => isVersion; set => isVersion = value; }
         public string ConfigFilePath { get => configFilePath; set => configFilePath = value; }
 
@@ -189,11 +189,15 @@ namespace WpfApp1
                    configFileModificationTime == list.configFileModificationTime;
         }
 
+        public string GetConfigFileMD5Code()
+        {
+            return MDfive.createMd5(configFilePath);
+        }
+
         public override int GetHashCode()
         {
-            var hashCode = -159444910;
-            //hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(configFileName);
-            hashCode = hashCode * -1521134295 + configFileModificationTime.GetHashCode();
+            var hashCode = -321212534;
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(ConfigFileMD5Code);
             return hashCode;
         }
     }
@@ -271,7 +275,7 @@ namespace WpfApp1
         public override int GetHashCode()
         {
             var hashCode = 2096143202;
-            //hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(fileName);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(fileName);
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(fileSize.ToString());
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(updateMethod);
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(lastModified);
