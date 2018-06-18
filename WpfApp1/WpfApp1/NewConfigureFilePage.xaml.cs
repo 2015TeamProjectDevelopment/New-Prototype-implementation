@@ -61,7 +61,12 @@ namespace WpfApp1
             ofd.InitialDirectory = System.IO.Directory.GetCurrentDirectory() + "\\Server";
             if (ofd.ShowDialog() == true)
             {
-                infos.Add(new Info { path = ofd.FileName, way = ""});
+                Info i = new Info { path = ofd.FileName, way = "" };
+                // 判断是否重复
+                //if (!infos.Contains)
+                    infos.Add(i);
+                //else
+                  //  MessageBox.Show("该文件已添加，请勿重复添加");
             }
 
         }

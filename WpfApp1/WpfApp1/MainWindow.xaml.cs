@@ -35,6 +35,7 @@ namespace WpfApp1
             log.Info("设置初始页面 newConfigureFilePage ");
         }
         
+        // 设置url.txt
         private void SetUrltxt()
         {
             string currentPath = System.IO.Directory.GetCurrentDirectory();
@@ -45,7 +46,7 @@ namespace WpfApp1
                 {
                     using (StreamWriter sw = new StreamWriter(fs, Encoding.UTF8))
                     {
-                        sw.WriteLine("file://" + currentPath + @"\Server\newestFolder\newest.ini");
+                        sw.WriteLine("file:///" + currentPath + @"\Server\newestFolder\newest.ini");
                     }
                 }
             }
@@ -112,176 +113,4 @@ namespace WpfApp1
             log.Info("点击管理-退出，退出程序");
         }
     }
-
-    public class IniFiles
-    {
-        public string path;
-        [DllImport("kernel32")] //返回0表示失败，非0为成功
-        private static extern long WritePrivateProfileString(string section, string key, string val, string filePath);
-        [DllImport("kernel32")] //返回取得字符串缓冲区的长度
-        private static extern int GetPrivateProfileString(string section, string key, string def, StringBuilder retVal, int size, string filePath);
-        /// <summary>
-        /// 保存ini文件的路径
-        /// 调用示例：var ini = IniFiles("C:\file.ini");
-        /// </summary>
-        /// <param name="INIPath"></param>
-        public IniFiles(string iniPath)
-        {
-            this.path = iniPath;
-        }
-        /// <summary>
-        /// 写Ini文件
-        /// 调用示例：ini.IniWritevalue("Server","name","localhost");
-        /// </summary>
-        /// <param name="Section">[缓冲区]</param>
-        /// <param name="Key">键</param>
-        /// <param name="value">值</param>
-        public void IniWritevalue(string Section, string Key, string value)
-        {
-            WritePrivateProfileString(Section, Key, value, this.path);
-        }
-        /// <summary>
-        /// 读Ini文件
-        /// 调用示例：ini.IniWritevalue("Server","name");
-        /// </summary>
-        /// <param name="Section">[缓冲区]</param>
-        /// <param name="Key">键</param>
-        /// <returns>值</returns>
-        public string IniReadvalue(string Section, string Key)
-        {
-            StringBuilder temp = new StringBuilder(255);
-
-            int i = GetPrivateProfileString(Section, Key, "", temp, 255, this.path);
-            return temp.ToString();
-        }
-
-    }
-
-    //配置文件列表类
-    public class ConfigList
-    {
-        private string configFileName;
-        private System.DateTime configFileModificationTime;
-        private string configFileMD5Code;
-        private bool isVersion;
-        private string configFilePath;
-
-        public ConfigList(string configFileName, System.DateTime configFileModificationTime, bool isVersion, string configFilePath)
-        {
-            this.configFileName = configFileName;
-            this.configFileModificationTime = configFileModificationTime;
-            //this.configFileHashCode = configFileHashCode;
-            this.isVersion = isVersion;
-            this.configFilePath = configFilePath;
-        }
-
-        public string ConfigFileName { get => configFileName; set => configFileName = value; }
-        public System.DateTime ConfigFileModificationTime { get => configFileModificationTime; set => configFileModificationTime = value; }
-        public string ConfigFileMD5Code { get => configFileMD5Code; set => configFileMD5Code = value; }
-        public bool IsVersion { get => isVersion; set => isVersion = value; }
-        public string ConfigFilePath { get => configFilePath; set => configFilePath = value; }
-
-        public override bool Equals(object obj)
-        {
-            var list = obj as ConfigList;
-            return list != null &&
-                   configFileName == list.configFileName &&
-                   configFileModificationTime == list.configFileModificationTime;
-        }
-
-        public string GetConfigFileMD5Code()
-        {
-            return MDfive.createMd5(configFilePath);
-        }
-
-        public override int GetHashCode()
-        {
-            var hashCode = -321212534;
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(ConfigFileMD5Code);
-            return hashCode;
-        }
-    }
-
-    //配置文件类
-    public class configFile
-    {
-        private List<File> configFiles;
-
-        public configFile(List<File> configFiles)
-        {
-            this.ConfigFiles = configFiles;
-        }
-
-        internal List<File> ConfigFiles { get => configFiles; set => configFiles = value; }
-
-        public override bool Equals(object obj)
-        {
-            var file = obj as configFile;
-            return file != null &&
-                   EqualityComparer<List<File>>.Default.Equals(ConfigFiles, file.ConfigFiles);
-        }
-
-        public override int GetHashCode()
-        {
-            return 2039249806 + EqualityComparer<List<File>>.Default.GetHashCode(ConfigFiles);
-        }
-    }
-
-    //文件类
-    public class File
-    {
-        private String fileName;        //文件名
-        private long fileSize;          //文件大小
-        private int hashcode;           //哈希码
-        private String updateMethod;    //更新操作
-        private String lastModified;    //最后修改时间
-        private String path;            //路径
-
-        public File()
-        {
-
-        }
-
-        //构造函数
-        public File(string fileName, long fileSize, string updateMethod, string lastModified, string path)
-        {
-            this.fileName = fileName;
-            this.fileSize = fileSize;
-            this.hashcode = GetHashCode();
-            this.updateMethod = updateMethod;
-            this.lastModified = lastModified;
-            this.path = path;
-        }
-
-        public string FileName { get => fileName; set => fileName = value; }
-        public long FileSize { get => fileSize; set => fileSize = value; }
-        public int Hashcode { get => hashcode; set => hashcode = value; }
-        public string UpdateMethod { get => updateMethod; set => updateMethod = value; }
-        public string LastModified { get => lastModified; set => lastModified = value; }
-        public string Path { get => path; set => path = value; }
-
-        public override bool Equals(object obj)
-        {
-            var file = obj as File;
-            return file != null &&
-                   fileName == file.fileName &&
-                   fileSize == file.fileSize &&
-                   hashcode == file.hashcode &&
-                   updateMethod == file.updateMethod &&
-                   lastModified == file.lastModified &&
-                   path == file.path;
-        }
-
-        public override int GetHashCode()
-        {
-            var hashCode = 2096143202;
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(fileName);
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(fileSize.ToString());
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(updateMethod);
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(lastModified);
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(path);
-            return hashCode;
-        }
-    }
-
 }

@@ -78,7 +78,7 @@ namespace WpfApp1
                     break;
                 }
                 // 每一个都使用url进行下载
-                temp_file_path = "file://" + temp_file_path;
+                temp_file_path = "file:///" + temp_file_path;
                 webClient.DownloadFile(temp_file_path, downloadPath + @"\" + temp_file_name);
             }
         }
