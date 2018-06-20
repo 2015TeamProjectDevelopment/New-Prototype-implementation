@@ -32,16 +32,10 @@ namespace WpfApp2
             InitializeComponent();
             if(args.Length > 0)
             {
-                string tem_file_name1 = args[3];
-                string tem_file_name2_path = args[0];
                 string tem_file_name2 = args[1];
                 string current = args[2];
-                string delete_path1 = current + "\\\\" + tem_file_name1 + ".exe";
-                string delete_path2 = current + "\\\\PC\\\\" + tem_file_name1 + ".exe";
+                string delete_path1 = current + "\\test.exe";
                 System.IO.File.Delete(delete_path1);
-                System.IO.File.Delete(delete_path2);
-                System.IO.File.Copy(tem_file_name2_path + "\\" + tem_file_name2,
-                    current + "\\" + tem_file_name2, true);
                 System.Diagnostics.Process.Start(current + "\\" + tem_file_name2);
             }
             
