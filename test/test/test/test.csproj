@@ -36,7 +36,7 @@
   <ItemGroup>
     <Reference Include="ClassLibrary1, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\library\ClassLibrary1\ClassLibrary1\obj\Debug\ClassLibrary1.dll</HintPath>
+      <HintPath>..\..\..\..\library\ClassLibrary1\ClassLibrary1\obj\Debug\ClassLibrary1.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />

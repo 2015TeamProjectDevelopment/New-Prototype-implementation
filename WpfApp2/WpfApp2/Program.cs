@@ -13,8 +13,6 @@ namespace WpfApp2
         static void Main(string[] args)
         {
             CustomApplication app = new CustomApplication();
-            //MainWindow window = new MainWindow(args);  
-            //app.MainWindow = window;  
             app.Run();
         }
     }

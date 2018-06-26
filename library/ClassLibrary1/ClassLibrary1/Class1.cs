@@ -31,6 +31,11 @@ namespace ClassLibrary1
             {
                 System.IO.Directory.CreateDirectory(localUrl);
             }
+            else
+            {
+                Directory.Delete(localUrl, true);
+                System.IO.Directory.CreateDirectory(localUrl);
+            }
             if (check.Checking())
             {
                 string fileDir = localUrl;
@@ -79,9 +84,7 @@ namespace ClassLibrary1
             //应该放在底部，否则会导致软件直接退出，其它操作没有进行。
             else if (updateMethod == "更新本软件")
             {
-                System.IO.File.Copy(downloadPath + "\\" + name,
-                    targetPath + "\\" + name, true);
-                string targetSoftwarePath = targetPath + " " + name + " " + current;
+                string targetSoftwarePath = name;
                 System.Diagnostics.Process.Start(@".\update_its.exe", targetSoftwarePath);
                 UpdateIni(current);
                 Environment.Exit(0);
